@@ -1,0 +1,55 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=1256
+
+Having to write active server pages with visual basic script included is pain enough. Vim eases this and with this automatic indenter even more.
+
+This script tries to be very smart and will probably fail horribly. Since version 0.4 (there is no 0.3) aspvbs.vim will do indenting based on the context. That means when you are in an html context, the html indenter will be used, otherwise the ASPVBS indenter.
+
+But wait, there is even more! The script tries to pick up the previous indent of each block, so when you open a new ASP block with <% the indent of the last ASP block will be resumed.
+
+The script works best when an opening <% and a closing %> are placed on a line on their own. You can most definitely break the script by writing code like '%><html></html><% ...'
+
+Here is an example of its indenting sprinkled with comments:
+
+<%
+function baz
+    if asd then
+        bcd
+%> 
+<html>
+    <head>
+        <title><%=myTitle%></title>
+    </head>
+    <body>
+<% If myPage = 1 Then %>
+        <table> <!-- the indent of body is continued -->
+            <tr>
+                ...
+            </tr>
+        </table>
+<% End If %> <!-- the indent of < % if mypage = 1 is picked up -->
+    </body> <!-- the indent of </table> is continued
+<%
+        ' the indent of line 4 is continued (inside if)
+        efg
+    end if ' if asd then is closed
+
+    ' normal asp indent here
+    if foo then
+        select case blah
+            case foo
+                Response.Redirect "google"
+        end select
+    else
+        Response.Redirect "yahoo"
+    end if
+    =this_is_a_statement()
+%>
+</html>
+Test1<%testin1%>Test2<%testin2%>test3<%statement
+
+    ' for the previous line, the html indenter wins
+    =this_is_a_statement2()
+end function ' close function baz
+%>
+
+
